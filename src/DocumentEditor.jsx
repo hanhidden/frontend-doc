@@ -21,7 +21,7 @@ export default function DocumentEditor() {
       if (!id) return;
       try {
         const response = await fetch(
-          `http://localhost:1337/api/documents/${id}`
+          `https://doc-edit-1.onrender.com/api/documents/${id}`
         );
         const data = await response.json();
         const {
@@ -58,7 +58,7 @@ export default function DocumentEditor() {
     _.debounce(async (content) => {
       if (id) {
         try {
-          await fetch(`http://localhost:1337/api/documents/${id}`, {
+          await fetch(`https://doc-edit-1.onrender.com/api/documents/${id}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",

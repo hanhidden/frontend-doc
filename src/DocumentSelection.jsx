@@ -16,7 +16,7 @@ export default function DocumentSelection() {
 
     while (true) {
       try {
-        const response = await fetch(`http://localhost:1337/api/documents/${currentId}`);
+        const response = await fetch(`https://doc-edit-1.onrender.com/api/documents/${currentId}`);
         if (response.ok) {
           const data = await response.json();
           if (data.data) {
@@ -43,7 +43,7 @@ export default function DocumentSelection() {
     if (!newDocTitle) return;
 
     try {
-      const response = await fetch(`http://localhost:1337/api/documents`, {
+      const response = await fetch(`https://doc-edit-1.onrender.com/api/documents`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ export default function DocumentSelection() {
     if (!editedTitle) return;
 
     try {
-      const response = await fetch(`http://localhost:1337/api/documents/${id}`, {
+      const response = await fetch(`https://doc-edit-1.onrender.com/api/documents/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
