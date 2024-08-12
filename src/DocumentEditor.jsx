@@ -7,7 +7,7 @@ import { setContent, setTitle } from "./documentslice";
 import { io } from "socket.io-client";
 import _ from "lodash";
 
-const socket = io("http://localhost:1337");
+const socket = io("https://doc-edit-han.netlify.app");
 
 export default function DocumentEditor() {
   const { id } = useParams();
