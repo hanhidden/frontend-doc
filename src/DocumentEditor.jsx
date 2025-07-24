@@ -1,13 +1,16 @@
 import { useEffect, useCallback } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import 'quill/dist/quill.snow.css';
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setContent, setTitle } from "./documentslice";
 import { io } from "socket.io-client";
 import _ from "lodash";
 
-const socket = io("https://doc-edit-1.onrender.com");
+// const socket = io("https://doc-edit-1.onrender.com");
+const socket = io("http://localhost:1337");  // or the port your backend runs on
+
 
 export default function DocumentEditor() {
   const { id } = useParams();
@@ -21,7 +24,8 @@ export default function DocumentEditor() {
       if (!id) return;
       try {
         const response = await fetch(
-          `https://doc-edit-1.onrender.com/api/documents/${id}`
+                    // `https://doc-edit-1.onrender.com/api/documents/${id}`
+          `http://localhost:1337/api/documents/${id}`
         );
         const data = await response.json();
         const {
@@ -58,7 +62,8 @@ export default function DocumentEditor() {
     _.debounce(async (content) => {
       if (id) {
         try {
-          await fetch(`https://doc-edit-1.onrender.com/api/documents/${id}`, {
+            // await fetch(`https://doc-edit-1.onrender.com/api/documents/${id}`, {
+          await fetch(`http://localhost:1337/api/documents/${id}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
