@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
+
 
 export default function DocumentSelection() {
   const [documents, setDocuments] = useState([]);
@@ -9,6 +11,8 @@ export default function DocumentSelection() {
   const [editingDocId, setEditingDocId] = useState(null); 
   const [editedTitle, setEditedTitle] = useState(""); 
   const navigate = useNavigate();
+
+
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://doc-edit-back.onrender.com";
 const socket = io(BACKEND_URL);
