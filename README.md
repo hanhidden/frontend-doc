@@ -29,10 +29,11 @@ A web application for **real-time collaborative document editing**, built with *
 
 
 ### Document Selection Page
-![Document Selection](src\assets\screenshots\document-selection.png)
+![Document Selection](src/assets/screenshots/document-selection.png)
 
 ### Document Editor Page
-![Document Editor](src\assets\screenshots\document-editor.png)
+![Document Editor](src/assets/screenshots/document-editor.png)
+
 
 ---
 
