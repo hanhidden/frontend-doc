@@ -18,7 +18,7 @@ A web application for **real-time collaborative document editing**, built with *
 ## 🛠 Tech Stack
 
 - **Frontend:** React, Redux, React Quill, Tailwind CSS  
-- **Backend:** Strapi or custom REST API  
+- **Backend:** Strapi
 - **Realtime:** Socket.IO  
 - **State Management:** Redux  
 - **Deployment:** Vercel(frontend) + Render(backend)
