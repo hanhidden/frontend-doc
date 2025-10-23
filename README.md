@@ -1,6 +1,6 @@
 # 📝 Real-Time Collaborative Document Editor
 
-A web application for **real-time collaborative document editing**, built with **React**, **React Quill**, **Redux**, and **Socket.IO**, backed by **Strapi** or a REST API. Users can create, edit, and collaborate on documents in real time.
+A web application for **real-time collaborative document editing**, built with **React**, **React Quill**, **Redux**, and **Socket.IO**, backed by **Strapi**/REST API. Users can create, edit, and collaborate on documents in real time.
 
 ---
 
