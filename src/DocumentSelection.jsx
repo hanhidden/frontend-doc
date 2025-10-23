@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 
 
+
 export default function DocumentSelection() {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,8 +14,10 @@ export default function DocumentSelection() {
   const navigate = useNavigate();
 
 
+const BACKEND_URL =
+  import.meta.env.VITE_BACKEND_URL || "https://doc-edit-back.onrender.com";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://doc-edit-back.onrender.com";
+// const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://doc-edit-back.onrender.com";
 const socket = io(BACKEND_URL);
 
   const fetchDocumentsStartingFromId = async (startId) => {

@@ -1,20 +1,14 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import 'quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.snow.css';
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setContent, setTitle } from "./documentslice";
 import { io } from "socket.io-client";
 import _ from "lodash";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://doc-edit-back.onrender.com";
-const socket = io(BACKEND_URL);
-
-
-
-// const socket = io("http://localhost:1337");  
-
+const BACKEND_URL =
+  import.meta.env.VITE_BACKEND_URL || "https://doc-edit-back.onrender.com";
 
 export default function DocumentEditor() {
   const { id } = useParams();
@@ -23,73 +17,91 @@ export default function DocumentEditor() {
   const value = useSelector((state) => state.document.content);
   const title = useSelector((state) => state.document.title);
 
+  const [socket, setSocket] = useState(null);
+
+  // Initialize socket
   useEffect(() => {
+    const newSocket = io(BACKEND_URL);
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
+
+  // Fetch document data
+  useEffect(() => {
+    if (!socket || !id) return;
+
     async function fetchDocumentData() {
-      if (!id) return;
       try {
-        const response = await fetch(`${BACKEND_URL}/api/documents/${id}`
-        );
+        const response = await fetch(`${BACKEND_URL}/api/documents/${id}`);
         const data = await response.json();
-        const {
-          attributes: { title, content },
-        } = data.data;
+        const { title, content } = data.data.attributes;
+
         dispatch(setTitle(title));
         dispatch(setContent(content));
+
         socket.emit("joinDocument", id);
       } catch (error) {
         console.error("Error fetching document:", error);
       }
     }
+
     fetchDocumentData();
 
     return () => {
       socket.emit("leaveDocument", id);
     };
-  }, [id, dispatch]);
+  }, [id, dispatch, socket]);
 
+  // Listen for real-time updates
   useEffect(() => {
-    socket.on("documentUpdate", (data) => {
+    if (!socket) return;
+
+    const handleUpdate = (data) => {
       if (data.documentId === id) {
         dispatch(setContent(data.content));
         dispatch(setTitle(data.title));
       }
-    });
+    };
+
+    socket.on("documentUpdate", handleUpdate);
 
     return () => {
-      socket.off("documentUpdate");
+      socket.off("documentUpdate", handleUpdate);
     };
-  }, [dispatch, id]);
+  }, [dispatch, id, socket]);
 
+  // Debounced saving to backend
   const debouncedSave = useCallback(
     _.debounce(async (content) => {
-      if (id) {
-        try {
-         
-          await fetch(`${BACKEND_URL}/api/documents/${id}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ data: { content, title } }),
-          });
-        } catch (error) {
-          console.error("Error saving document:", error);
-        }
+      if (!id) return;
+      try {
+        await fetch(`${BACKEND_URL}/api/documents/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: { content, title } }),
+        });
+      } catch (error) {
+        console.error("Error saving document:", error);
       }
     }, 1000),
     [id, title]
   );
 
+  // Handle content changes
   const handleContentChange = (content) => {
     dispatch(setContent(content));
     debouncedSave(content);
 
-    socket.emit("documentUpdated", { documentId: id, title, content });
+    if (socket) {
+      socket.emit("documentUpdated", { documentId: id, title, content });
+    }
   };
 
-  const handleBackButtonClick = () => {
-    navigate("/");
-  };
+  // Back button
+  const handleBackButtonClick = () => navigate("/");
 
   const modules = {
     toolbar: [
@@ -116,12 +128,12 @@ export default function DocumentEditor() {
         </button>
       </header>
 
-      <main className="flex-grow p-4 flex flex-col items-center justify-center">
+      <main className="flex-grow p-4 flex flex-col items-center justify-center w-full max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold mb-4 font-mono underline text-[#6482AD]">
           {title}
         </h1>
         <ReactQuill
-          className="font-mono border border-[#7FA1C3] rounded-md"
+          className="font-mono border border-[#7FA1C3] rounded-md w-full"
           theme="snow"
           value={value}
           onChange={handleContentChange}
